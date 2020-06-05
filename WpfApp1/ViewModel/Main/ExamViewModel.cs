@@ -41,6 +41,9 @@ namespace WpfApp1
             this.GetDataEnable = true;
             this.IsTeacher = false;
             this.PageSize = 50;
+            this.state = true;
+            this.TestEnable = true;
+            this.TestCommandText = "测试";
             this.GetDataCommandText = "采集数据";
             lstArea = AreaNames.Split('、').ToList();
             this.TotalDataCount = GetTotalPage();
@@ -171,9 +174,38 @@ namespace WpfApp1
                 this.RaisePropertyChanged();
             }
         }
+        public string _testCommandText = string.Empty;
 
+        public string TestCommandText
+        {
+            get
+            {
+                return _testCommandText;
+            }
+            set
+            {
+                _testCommandText = value;
+                this.RaisePropertyChanged();
+            }
+        }
 
         public bool _getDataEnable { get; set; }
+
+        public bool _testEnable { get; set; }
+
+        public bool TestEnable
+        {
+            get
+            {
+                return _testEnable;
+            }
+            set
+            {
+                _testEnable = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
         public bool GetDataEnable
         {
             get
@@ -246,6 +278,34 @@ namespace WpfApp1
 
         private BaseCommand getDataCommad;
 
+        private BaseCommand testCommand;
+
+        public BaseCommand TestCommand
+        {
+            get
+            {
+                if (testCommand == null)
+                {
+                    testCommand = new BaseCommand(new Action<object>(o =>
+                    {
+                        Task.Run(() =>
+                        {
+                            TestCommandText = "测试中。。。。";
+                            TestEnable = false;
+                            Thread.Sleep(6000);
+                            TestCommandText = "测试 完成";
+                            // state = true;
+                            TestEnable = true;
+                        });
+
+
+                    })
+                   
+                        );
+                }
+                return testCommand;
+            }
+        }
         public BaseCommand InitDataCommand
         {
             get
@@ -473,87 +533,100 @@ namespace WpfApp1
                 //38214.9979 Threed Pool 2个线程
             });
         }
+        public bool state { get; set; }
+     
         public BaseCommand GetDataCommand
         {
             get
             {
-
+                
                 if (getDataCommad == null)
                 {
-                    getDataCommad = new BaseCommand(new Action<object>(o =>
+                    getDataCommad = new BaseCommand(
+                        new Action<object>(o =>
                     {
 
 
-                        this.GetDataEnable = false;
-
-                        var result = httpHelper.httpGet(this.Address);
-                        HtmlDocument doc = new HtmlDocument();
-                        doc.LoadHtml(result);
-                        var data = doc.DocumentNode.SelectNodes("//table/tbody/tr");
-                        var AreaName = string.Empty;
-                        ExamInfo examInfo = new ExamInfo();
-                        List<ExamInfo> examInfos = new List<ExamInfo>();
-                        IdWorker worker = new IdWorker(1);
-                        foreach (var item in data)
+                        Task.Run(() =>
                         {
-                            var td = item.SelectNodes("td");
+                            state = false;
+                            this.GetDataEnable = false;
+                            this.GetDataCommandText = "正在采集中...";
 
-                            if (td == null || td.Count() <= 0)
+                            var result = httpHelper.httpGet(this.Address);
+                            HtmlDocument doc = new HtmlDocument();
+                            doc.LoadHtml(result);
+                            var data = doc.DocumentNode.SelectNodes("//table/tbody/tr");
+                            var AreaName = string.Empty;
+                            ExamInfo examInfo = new ExamInfo();
+                            List<ExamInfo> examInfos = new List<ExamInfo>();
+                            IdWorker worker = new IdWorker(1);
+                            foreach (var item in data)
                             {
-                                continue;
-                            }
-                            else if (td.Count() == 1)
-                            {
-                                var tdText = td.FirstOrDefault().InnerText;
-                                if (tdText.Contains("考试名称"))
-                                {
-                                    AreaName = GetAreaName(tdText);
-                                }
-                            }
-                            else if (td.Count() == 4)
-                            {
-                                var tdText = td.FirstOrDefault().InnerText.Replace("&nbsp;", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
-                                if (tdText.Contains("报考单位") || string.IsNullOrEmpty(tdText))
+                                var td = item.SelectNodes("td");
+
+                                if (td == null || td.Count() <= 0)
                                 {
                                     continue;
                                 }
-                                examInfo = new ExamInfo();
-                                examInfo.Id = worker.nextId();
-                                examInfo.Company = td[0].InnerText.Trim();
-                                examInfo.Position = td[1].InnerText.Trim();
-                                examInfo.Code = Regex.Replace(examInfo.Position, @"[^0-9]+", "");
-                                examInfo.Position = examInfo.Position.Replace(examInfo.Code, "");
-                                examInfo.HasPay = Convert.ToInt32(td[2].InnerText);
-                                examInfo.NotPay = Convert.ToInt32(td[3].InnerText);
-                                examInfo.CreateTime = DateTime.Now.ToString();
-                                examInfo.Area = AreaName;
-                                examInfo.Date = DateTime.Now.ToString("yyyy-MM-dd");
-                                examInfos.Add(examInfo);
+                                else if (td.Count() == 1)
+                                {
+                                    var tdText = td.FirstOrDefault().InnerText;
+                                    if (tdText.Contains("考试名称"))
+                                    {
+                                        AreaName = GetAreaName(tdText);
+                                    }
+                                }
+                                else if (td.Count() == 4)
+                                {
+                                    var tdText = td.FirstOrDefault().InnerText.Replace("&nbsp;", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+                                    if (tdText.Contains("报考单位") || string.IsNullOrEmpty(tdText))
+                                    {
+                                        continue;
+                                    }
+                                    examInfo = new ExamInfo();
+                                    examInfo.Id = worker.nextId();
+                                    examInfo.Company = td[0].InnerText.Trim();
+                                    examInfo.Position = td[1].InnerText.Trim();
+                                    examInfo.Code = Regex.Replace(examInfo.Position, @"[^0-9]+", "");
+                                    examInfo.Position = examInfo.Position.Replace(examInfo.Code, "");
+                                    examInfo.HasPay = Convert.ToInt32(td[2].InnerText);
+                                    examInfo.NotPay = Convert.ToInt32(td[3].InnerText);
+                                    examInfo.CreateTime = DateTime.Now.ToString();
+                                    examInfo.Area = AreaName;
+                                    examInfo.Date = DateTime.Now.ToString("yyyy-MM-dd");
+                                    examInfos.Add(examInfo);
+                                }
                             }
-                        }
 
-                        //删除数据 在插入数据
-                        var rows = FreeSqlHelper.freeSql.Delete<ExamInfo>().Where(s => s.Date == DateTime.Now.ToString("yyyy-MM-dd")).ExecuteAffrows();
+                            //删除数据 在插入数据
+                            var rows = FreeSqlHelper.freeSql.Delete<ExamInfo>().Where(s => s.Date == DateTime.Now.ToString("yyyy-MM-dd")).ExecuteAffrows();
 
-                        rows = FreeSqlHelper.freeSql.Insert<ExamInfo>(examInfos).ExecuteAffrows();
-
-
-                        this.GetDataEnable = true;
-                        this.GetDataCommandText = "采集数据";
+                            rows = FreeSqlHelper.freeSql.Insert<ExamInfo>(examInfos).ExecuteAffrows();
 
 
-
-                        System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                        {
-                            MessageBox.Show("采集成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }));
+                            this.GetDataEnable = true;
+                            this.GetDataCommandText = "采集数据";
 
 
-                    }));
+
+                            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                MessageBox.Show("采集成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }));
+
+                            state = true;
+                        });
+                    })
+                        ) ;
                 }
 
 
                 return getDataCommad;
+            }
+            set
+            {
+               
             }
         }
 
