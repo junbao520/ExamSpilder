@@ -1,0 +1,77 @@
+﻿<Window x:Class="WpfApp1.MainWindow3"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:vm="clr-namespace:WpfApp1"  
+        xmlns:pg="clr-namespace:Pagination;assembly=Paginations"
+        mc:Ignorable="d"
+        Title="WpfDemoMvvm" Height="450" Width="900">
+    <Window.Resources>
+        <vm:IndexConverter x:Key="idxcvt"/>
+        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <!--测试-->
+            <Grid  Margin="0 0 10 0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" x:Name="column1"/>
+                <Grid Grid.Column="1" x:Name="column2"/>
+                <Grid Grid.Column="2" x:Name="column3"/>
+                <Grid Grid.Column="3" x:Name="column4"/>
+                <Grid Grid.Column="4" x:Name="column5"/>
+            </Grid>
+            <ListView x:Name="listview" ItemContainerStyle="{StaticResource ResourceKey=ListViewItemStyle}" >
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="序号" Width="{Binding ElementName=column1,Path=ActualWidth}" DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource idxcvt}}" />
+                        <GridViewColumn Header="书名" Width="{Binding ElementName=column2,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=Name}"/>
+                        <GridViewColumn Header="类型" Width="{Binding ElementName=column3,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=Type}"/>
+                        <GridViewColumn Header="作者" Width="{Binding ElementName=column4,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=Author}"/>
+                        <GridViewColumn Header="出版社" Width="{Binding ElementName=column5,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=Press}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </Grid>
+        <Border  BorderBrush="Red" BorderThickness="1" Margin="0 1 0 1">
+            <StackPanel Name="stackpanel1" Orientation="Horizontal" Grid.Row="0" Margin="10 10 10 10"  Background="AliceBlue">
+                <TextBlock Block.TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">书名</TextBlock>
+                <TextBox  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="100" TextChanged="txtName_TextChanged"   Name="txtName" Margin="10 0 0 0"  KeyDown="content_key"></TextBox>
+                <TextBlock Block.TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 0 0 0">类型</TextBlock>
+                <TextBox  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="100"  Margin="10 0 0 0" Name="txtType"  KeyDown="content_key"></TextBox>
+
+                <Button Content="查询" Margin="10 0 0 0" Width="100" Name="btnQuery"></Button>
+
+            </StackPanel>
+        </Border>
+
+
+        <pg:Pagination x:Name="pg" Grid.Row="2" 
+                       TotalDataCount="255" Margin="1"
+                       IsShowPageInfo="True"
+                       MaxShownPageCount="10"
+                       IsShowPageDataCountSelector="True"
+                       SelectedPageBackground="Chartreuse"
+                       PageSelectorBackground="Cyan"/>
+
+    </Grid>
+    
+</Window>

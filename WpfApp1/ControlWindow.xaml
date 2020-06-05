@@ -1,0 +1,56 @@
+﻿<Window x:Class="WpfApp1.ControlWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="ControlWindow" Height="850" Width="800">
+    <StackPanel>
+        <TextBlock FontSize="32" Margin="5" Width="100" Height="50" >123</TextBlock>
+        <TextBlock FontSize="32" Margin="5" Width="100" Height="50" TextOptions.TextFormattingMode="Display">123</TextBlock>
+        <Button Cursor="Hand" Padding="5" IsCancel="True" Click="Button_Click">Cancel</Button>
+        <Button Cursor="Hand" Padding="5" IsDefault="True" Click="Button_Click_1" >Defalut</Button>
+        <Button>
+            <Button>
+                <StackPanel>
+                    <TextBlock>Test</TextBlock>
+                    <TextBlock>Test</TextBlock>
+                </StackPanel>
+                
+                
+            </Button>
+        </Button>
+        <ToggleButton>ToggleButton</ToggleButton>
+        <RepeatButton>RepeatButton</RepeatButton>
+        <Button ToolTip="ToolTip">ToolTip</Button>
+        <TextBlock TextWrapping="Wrap">
+            <Run TextDecorations="Underline" MouseEnter="Run_MouseEnter">term</Run>
+            You can Use a 
+            
+      
+        </TextBlock>
+
+        <Expander Header="Expander">
+            <StackPanel>
+        <Popup Name="popLink" StaysOpen="False" Placement="Mouse" MaxWidth="200" PopupAnimation="Slide" AllowsTransparency="True">
+
+            <TextBlock TextWrapping="Wrap">Transate Words</TextBlock>
+            
+        </Popup>
+
+        <TabControl>
+            <TabItem Header="TabOne">Tab One</TabItem>
+            <TabItem Header="TabTwo">Tab Two</TabItem>
+        </TabControl>
+            </StackPanel>
+        </Expander>
+
+        <TextBox SpellCheck.IsEnabled="True" AutoWordSelection="True">Hello wolrd</TextBox>
+        <Slider Value="30" Maximum="100" Minimum="0"></Slider>
+        <ProgressBar IsIndeterminate="True"></ProgressBar>
+        <Calendar></Calendar>
+        <DatePickerTextBox></DatePickerTextBox>
+        <DatePicker></DatePicker>
+    </StackPanel>
+</Window>

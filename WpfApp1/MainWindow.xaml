@@ -1,0 +1,35 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:vm="clr-namespace:WpfApp1"  
+        mc:Ignorable="d"
+        Title="WpfDemo" Height="450" Width="800">
+    <Window.Resources>
+        <vm:IndexConverter x:Key="idxcvt"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ListView HorizontalAlignment="Left" Height="auto" MinWidth="800"  Name="lstViewBook" Grid.Row="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="序号" Width="70" DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource idxcvt}}" />
+                    <GridViewColumn Header="书名" Width="120" DisplayMemberBinding="{Binding Path=Name}"/>
+                    <GridViewColumn Header="类型" Width="120" DisplayMemberBinding="{Binding Path=Type}"/>
+                    <GridViewColumn Header="作者" Width="120" DisplayMemberBinding="{Binding Path=Author}"/>
+                    <GridViewColumn Header="出版社" Width="120" DisplayMemberBinding="{Binding Path=Press}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <WrapPanel Grid.Row="1" Orientation="Horizontal"></WrapPanel>
+
+        <Button Grid.Row="2" HorizontalAlignment="Right"  Name="btnRefresh">Refresh</Button>
+
+    </Grid>
+</Window>
