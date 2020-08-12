@@ -75,6 +75,8 @@
                 <TextBox  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="200"   Margin="10 0 0 0"  KeyDown="content_key" Text="{Binding Address}"></TextBox>
                 <Button Content="{Binding GetDataCommandText}" Margin="10 0 0 0" Width="100" 
                         Command="{Binding GetDataCommand}" IsEnabled="{Binding GetDataEnable}" ></Button>
+
+                <Button Content="录入成绩"  Margin="10 0 0 0"  Command="{Binding EnterScoreCommnd}"></Button>
             </StackPanel>
         </Border>
         <Border  BorderBrush="Red" BorderThickness="2" Margin="0 1 0 1"  Grid.Row="1">

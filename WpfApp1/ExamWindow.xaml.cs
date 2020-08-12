@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.ViewModel.Common;
 
 namespace WpfApp1
 {
@@ -23,6 +24,7 @@ namespace WpfApp1
         public ExamWindow()
         {
             InitializeComponent();
+            this.Register<EnterScoreWindow>("EnterScoreWindow");
         }
         private void content_key(object sender, KeyEventArgs e)
         {

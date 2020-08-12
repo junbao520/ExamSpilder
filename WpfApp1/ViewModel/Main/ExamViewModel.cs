@@ -63,7 +63,25 @@ namespace WpfApp1
             }
         }
 
-
+        private bool toClose = false;
+        /// <summary>
+        /// 是否要关闭窗口
+        /// </summary>
+        public bool ToClose
+        {
+            get
+            {
+                return toClose;
+            }
+            set
+            {
+                toClose = value;
+                if (toClose)
+                {
+                    this.RaisePropertyChanged("ToClose");
+                }
+            }
+        }
 
         /// <summary>
         /// 获取区域名称
@@ -246,6 +264,8 @@ namespace WpfApp1
 
         private BaseCommand getDataCommad;
 
+        private BaseCommand enterScoreCommnd;
+
         public BaseCommand InitDataCommand
         {
             get
@@ -264,6 +284,21 @@ namespace WpfApp1
                     }));
                 }
                 return initDataCommand;
+            }
+        }
+
+        public BaseCommand EnterScoreCommnd
+        {
+            get
+            {
+                if (enterScoreCommnd== null)
+                {
+                    enterScoreCommnd= new BaseCommand(new Action<object>(o =>
+                    {
+                        WindowManager.Show("EnterScoreWindow", null);
+                    }));
+                }
+                return enterScoreCommnd;
             }
         }
         /// <summary>

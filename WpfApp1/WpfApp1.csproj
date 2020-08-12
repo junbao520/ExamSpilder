@@ -112,6 +112,9 @@
     <Compile Include="ExamWindow.xaml.cs">
       <DependentUpon>ExamWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EnterScoreWindow.xaml.cs">
+      <DependentUpon>EnterScoreWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helper\Excehelper.cs" />
     <Compile Include="Helper\FreeSqlHelper.cs" />
     <Compile Include="Helper\httpHelper.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="ViewModel\Common\PasswordBoxHelper.cs" />
     <Compile Include="ViewModel\Common\ValidationExceptionBehavior.cs" />
     <Compile Include="ViewModel\Common\WindowBehavior.cs" />
+    <Compile Include="ViewModel\Common\WindowExt.cs" />
     <Compile Include="ViewModel\Common\WindowManager.cs" />
     <Compile Include="ViewModel\Login\LoginModel.cs" />
     <Compile Include="ViewModel\Login\LoginViewModel.cs" />
@@ -139,6 +143,7 @@
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowManager.cs" />
     <Page Include="ControlWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -146,6 +151,10 @@
     <Page Include="ExamWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EnterScoreWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="HelloWord.xaml">
       <SubType>Designer</SubType>
