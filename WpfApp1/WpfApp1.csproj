@@ -123,6 +123,7 @@
       <DependentUpon>MainWindow4.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\ExamInfo.cs" />
+    <Compile Include="Model\ExamScore.cs" />
     <Compile Include="Model\Recruit.cs" />
     <Compile Include="ViewModel\Common\BaseCommand.cs" />
     <Compile Include="ViewModel\Common\CheckConverter.cs" />
@@ -248,9 +249,14 @@
     <Folder Include="ViewModel\NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="DataBase\datanew.txt">
+    <None Include="DataBase\datanew.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataBase\公考成绩.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.3.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.0.0\build\MaterialDesignThemes.targets')" />

@@ -28,10 +28,12 @@
         <Grid Grid.Row="2">
             <!--测试-->
             <Grid  Margin="0 0 10 0">
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -47,8 +49,11 @@
                 <Grid Grid.Column="5" x:Name="column6"/>
                 <Grid Grid.Column="6" x:Name="column7"/>
                 <Grid Grid.Column="7" x:Name="column8"/>
-                <Grid Grid.Column="7" x:Name="column9"/>
-                <Grid Grid.Column="7" x:Name="column10"/>
+                <Grid Grid.Column="8" x:Name="column9"/>
+                <Grid Grid.Column="9" x:Name="column10"/>
+                <Grid Grid.Column="10" x:Name="column11"/>
+                <Grid Grid.Column="11" x:Name="column12"/>
+                <Grid Grid.Column="12" x:Name="column13"/>
             </Grid>
             <ListView x:Name="listview" ItemContainerStyle="{StaticResource ResourceKey=ListViewItemStyle}"  ItemsSource="{Binding Exams}">
                 <ListView.View>
@@ -60,9 +65,12 @@
                         <GridViewColumn Header="代码" Width="{Binding ElementName=column5,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=Code}"/>
                         <GridViewColumn Header="岗位" Width="{Binding ElementName=column6,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=Position}"/>
                         <GridViewColumn Header="招聘人数" Width="{Binding ElementName=column7,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=NeedNumber}"/>
-                        <GridViewColumn Header="已缴费" Width="{Binding ElementName=column8,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=HasPay}"/>
-                        <GridViewColumn Header="未缴费" Width="{Binding ElementName=column9,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=NotPay}"/>
-                        <GridViewColumn Header="采集时间" Width="{Binding ElementName=column10,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=CreateTime}"/>
+                        <GridViewColumn Header="小围" Width="{Binding ElementName=column8,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=xw}"/>
+                        <GridViewColumn Header="中围" Width="{Binding ElementName=column9,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=zw}"/>
+                        <GridViewColumn Header="大围" Width="{Binding ElementName=column10,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=dw}"/>
+                        <GridViewColumn Header="已缴费" Width="{Binding ElementName=column11,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=HasPay}"/>
+                        <GridViewColumn Header="未缴费" Width="{Binding ElementName=column12,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=NotPay}"/>
+                        <GridViewColumn Header="采集时间" Width="{Binding ElementName=column13,Path=ActualWidth}" DisplayMemberBinding="{Binding Path=CreateTime}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

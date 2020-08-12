@@ -28,7 +28,7 @@ namespace WpfApp1
         public List<ExamInfo> lstExam = new List<ExamInfo>();
         private ObservableCollection<ExamInfo> _Exams { get; set; }
 
-        public string AreaNames = "锦江、青羊、金牛、武侯、成华、龙泉驿、青白江、新都、温江、双流、郫都、简阳、都江堰、彭州、邛崃、崇州、金堂、大邑、蒲江、新津";
+        public string AreaNames = "锦江、青羊、金牛、武侯、成华、龙泉驿、青白江、新都、温江、双流、郫都、简阳、都江堰、彭州、邛崃、崇州、金堂、大邑、蒲江、新津、资阳";
         public List<string> lstArea = new List<string>();
 
         public ExamViewModel()
@@ -291,15 +291,101 @@ namespace WpfApp1
         {
             get
             {
-                if (enterScoreCommnd== null)
+                if (enterScoreCommnd == null)
                 {
-                    enterScoreCommnd= new BaseCommand(new Action<object>(o =>
-                    {
-                        WindowManager.Show("EnterScoreWindow", null);
-                    }));
+                    enterScoreCommnd = new BaseCommand(new Action<object>(o =>
+                     {
+                        //直接读取文本文件然后进行成绩解析
+                        ReadScoreData();
+                     }));
                 }
                 return enterScoreCommnd;
             }
+        }
+
+        public string getCode(string str)
+        {
+            Regex r = new Regex(@"([1-9]\d*\.?\d*)|(0\.\d*[1-9])");//正则
+            Match m = r.Match(str);//匹配
+            if (m.Success)
+            {
+                if (str.StartsWith("0"))
+                {
+                    if (!m.Groups[0].Value.ToString().StartsWith("0"))
+                    {
+                        return "0" + m.Groups[0].Value;
+                    }
+                }
+                else
+                {
+                    return m.Groups[0].Value;
+                }
+             
+            }
+            return string.Empty;
+        }
+
+        public void ReadScoreData()
+        {
+            var data = File.ReadAllLines("DataBase\\公考成绩.txt");
+
+            List<ExamScore> examScores = new List<ExamScore>();
+
+            List<Task> taskList = new List<Task>();
+            TaskFactory taskFactory = new TaskFactory();
+            var beginTime = DateTime.Now;
+            var AreaName = string.Empty;
+            IdWorker worker = new IdWorker(1);
+            foreach (var line in data)
+            {
+                if (line == "\t")
+                {
+                    continue;
+                }
+                ExamScore examScore = new ExamScore();
+                examScore.Id = worker.nextId();
+                var str = line.Replace("&nbsp;", "").Replace("\r", "").Replace("\n", "");
+                if (string.IsNullOrEmpty(str))
+                {
+                    continue;
+                }
+                var isArea=!int.TryParse(str.First().ToString(), out int result);
+                if (isArea)
+                {
+                    AreaName = str.Replace("\t", "");
+                
+                    continue;
+                }
+                else 
+                {
+            
+                    var dataArray = str.Split('\t');
+                    if (dataArray.Length != 2)
+                    {
+                        continue;
+                    }
+                    if (AreaName == "")
+                    {
+
+                    }
+                    if (AreaName == "都江堰" && examScore.Code == "02006")
+                    {
+
+                    }
+                    examScore.Area = AreaName;
+                    examScore.Code = getCode(dataArray[0]);
+                    examScore.Score = Convert.ToDouble(dataArray[1]);
+                }
+                examScores.Add(examScore);
+
+
+            }
+            var ts = (DateTime.Now - beginTime).TotalMilliseconds;
+
+            FreeSqlHelper.freeSql.Delete<ExamScore>().Where(s => 1 == 1).ExecuteAffrows();
+            FreeSqlHelper.freeSql.Insert<ExamScore>(examScores).ExecuteAffrows();
+            //14秒
+
         }
         /// <summary>
         /// 查询命令
@@ -339,17 +425,18 @@ namespace WpfApp1
                 //限制线程数量             //  ThreadPool.SetMaxThreads(20, 20);
                 if (taskList.Count(t => t.Status != TaskStatus.RanToCompletion) >= 1)
                 {
-                    Task.WaitAny(taskList.ToArray());taskList = taskList.Where(t => t.Status != TaskStatus.RanToCompletion).ToList();
+                    Task.WaitAny(taskList.ToArray()); taskList = taskList.Where(t => t.Status != TaskStatus.RanToCompletion).ToList();
                 }
                 var Tasks = Task.Run(() =>
                  {
-                     Recruit recruit = new Recruit(); recruit.Id = worker.nextId();recruit.CreateTime = DateTime.Now.ToString();
-                    foreach (var item in line.Split('\t'))
+                     Recruit recruit = new Recruit(); recruit.Id = worker.nextId(); recruit.CreateTime = DateTime.Now.ToString();
+                     foreach (var item in line.Split('\t'))
                      {
                          var str = item.Replace("&nbsp;", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""); ;
                          var tempAreaName = GetAreaName(str);
                          if (!string.IsNullOrEmpty(tempAreaName))
-                         {AreaName = tempAreaName;}recruit.AreaName = AreaName;
+                         { AreaName = tempAreaName; }
+                         recruit.AreaName = AreaName;
                          if (str.StartsWith("01") || str.StartsWith("02") || str.StartsWith("03") || str.StartsWith("04") || str.StartsWith("05"))
                          {
                              recruit.Code = str;
@@ -592,6 +679,15 @@ namespace WpfApp1
             }
         }
 
+        public double getRwScore(List<ExamScore> scores,int number)
+        {
+            if (number > scores.Count())
+            {
+                return scores.Last().Score;
+            }
+            return scores[number].Score;
+        }
+
         public void LoadPageData()
         {
             var data = FreeSqlHelper.freeSql.Queryable<ExamInfo>().
@@ -599,6 +695,8 @@ namespace WpfApp1
 
 
             var recruits = FreeSqlHelper.freeSql.Queryable<Recruit>().ToList();
+
+            var examScores = FreeSqlHelper.freeSql.Queryable<ExamScore>().ToList();
 
             if (IsTeacher)
             {
@@ -619,10 +717,20 @@ namespace WpfApp1
                 if (recruits.Any(s => s.Code == result[i].Code && s.AreaName == result[i].Area))
                 {
                     result[i].NeedNumber = recruits.Where(s => s.Code == result[i].Code && s.AreaName == result[i].Area).FirstOrDefault().Number;
+
+                    var scores = examScores.Where(s => s.Area == result[i].Area && s.Code == result[i].Code).OrderByDescending(s=>s.Score).ToList();
+
+                    if (scores.Count()> 0)
+                    {
+                        //小维就是取招聘人数个数成绩
+                        result[i].xw = getRwScore(scores, result[i].NeedNumber);
+                        result[i].zw = getRwScore(scores, result[i].NeedNumber*2);
+                        result[i].dw = getRwScore(scores, result[i].NeedNumber*3);
+                    }
                 }
 
             }
-            this.Exams = new ObservableCollection<ExamInfo>(result);
+            this.Exams = new ObservableCollection<ExamInfo>(result.Where(s=>s.xw>0));
         }
 
 
